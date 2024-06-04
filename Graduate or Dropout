@@ -1,0 +1,22 @@
+import pandas as pd
+data = pd.read_csv('data.csv')
+
+from sklearn.preprocessing import LabelEncoder
+le_ = LabelEncoder()
+
+for i in data:
+    data[i] = le_.fit_transform(data[i])
+
+# drop data
+x = data.drop(columns=['Marital status','Application mode','Application order', 'Course', 'Daytime/evening attendance', 'Previous qualification', 'Nacionality', "Mother's qualification", "Father's qualification", "Mother's occupation", "Father's occupation", "Displaced", "Educational special needs", "Debtor", "Gender", "Curricular units 1st sem (credited)", "Curricular units 1st sem (enrolled)", "Curricular units 1st sem (evaluations)", "Curricular units 1st sem (without evaluations)", "Curricular units 2nd sem (credited)", "Curricular units 2nd sem (enrolled)", "Curricular units 2nd sem (evaluations)", "Curricular units 2nd sem (without evaluations)", "Unemployment rate", "Inflation rate", "Target"])
+y = data.Target
+from sklearn.linear_model import LogisticRegression
+lin_ = LogisticRegression(max_iter=60000)
+
+from sklearn.model_selection import train_test_split
+xtrain, xtest, ytrain, ytest = train_test_split(x,y, train_size=0.2,shuffle=True)
+lin_.fit(xtrain, ytrain)
+xtest_pred = lin_.predict(xtest) # [2 0 2 ... 0 0 2]
+xtest_pred = pd.DataFrame(xtest_pred)
+
+lin_.score(xtest, ytest)*100 #72.4
